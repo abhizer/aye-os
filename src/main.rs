@@ -4,7 +4,7 @@
 #![no_std]
 #![no_main]
 
-use aye_os::println;
+use aye_os::{hlt_loop, println};
 use core::panic::PanicInfo;
 
 #[no_mangle]
@@ -13,23 +13,18 @@ pub extern "C" fn _start() -> ! {
 
     aye_os::init();
 
-    x86_64::instructions::interrupts::int3();
+    println!("didn't crash");
+    // x86_64::instructions::interrupts::int3();
 
     // Cause page fault, as the virtual address 0xdeadbeef isn't mapped to a physical address
     // unsafe {
     //     *(0xdeadbeef as *mut u64) = 42;
     // }
 
-    fn stack_overflow() {
-        stack_overflow();
-    }
-
-    stack_overflow();
-
     #[cfg(test)]
     test_main();
 
-    loop {}
+    hlt_loop();
 }
 
 /// This function is called on panic.
@@ -37,7 +32,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    hlt_loop();
 }
 
 #[cfg(test)]
