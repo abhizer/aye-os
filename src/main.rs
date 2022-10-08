@@ -11,6 +11,10 @@ use core::panic::PanicInfo;
 pub extern "C" fn _start() -> ! {
     println!("Hello, World{}", "!");
 
+    aye_os::init();
+
+    x86_64::instructions::interrupts::int3();
+
     #[cfg(test)]
     test_main();
 
